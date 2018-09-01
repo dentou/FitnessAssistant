@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">FitnessAssistant</string>
+
+    <string name="drawer_profile">Profile</string>
+    <string name="drawer_reports">Reports</string>
+    <string name="drawer_exercises">Exercises</string>
+    <string name="drawer_diet">Diet</string>
+    <string name="drawer_settings">Settings</string>
+
+    <string name="profile_name_label">Name</string>
+    <string name="profile_name_hint">Enter your name</string>
+    <string name="profile_name_error">Name must be non-empty.</string>
+
+    <string name="profile_date_of_birth_label">Date Of Birth</string>
+
+    <string name="profile_height_label">Height</string>
+    <string name="profile_height_hint">Your height</string>
+    <string name="profile_height_format">%1$.1f m</string>
+    <string name="profile_height_error">Height must be larger than 0.</string>
+
+    <string name="profile_weight_label">Weight</string>
+    <string name="profile_weight_hint">Your weight</string>
+    <string name="profile_weight_format">%1$.1f kg</string>
+    <string name="profile_weight_error">Weight must be larger than 0.</string>
+
+
+    <string name="profile_edit">Edit</string>
+    <string name="profile_save">Save</string>
+
+
+    <string name="empty_profile_text">You have not created a profile.</string>
+    <string name="empty_profile_button">Create Profile</string>
+
+    <string name="date_picker_title">User\'s date of birth</string>
+
+</resources>
