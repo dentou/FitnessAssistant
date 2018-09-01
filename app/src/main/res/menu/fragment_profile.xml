@@ -6,7 +6,7 @@
     <item
         android:id="@+id/profile_edit_menu"
         android:title="@string/profile_edit"
-        android:icon="@drawable/ic_edit_black_24dp"
+        android:icon="@drawable/ic_edit"
         app:showAsAction="ifRoom|withText"/>
 
 </menu>

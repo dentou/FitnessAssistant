@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -37,7 +36,6 @@
                 android:id="@+id/profile_name_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
                 android:textSize="18sp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
@@ -58,7 +56,6 @@
                 android:id="@+id/profile_date_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
                 android:textSize="18sp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
@@ -78,7 +75,6 @@
                 android:id="@+id/profile_height_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
                 android:textSize="18sp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
@@ -98,7 +94,6 @@
                 android:id="@+id/profile_weight_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
                 android:textSize="18sp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
