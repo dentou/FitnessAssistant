@@ -62,6 +62,21 @@ public class BodyHandler {
         }
     }
 
+    public Body getLatestBody(UUID userId) {
+        BodyCursorWrapper cursor = queryBodies(
+                BodyTable.Cols.USER_UUID + " = ?",
+                new String[] { userId.toString() });
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+            cursor.moveToLast();
+            return cursor.getBody();
+        } finally {
+            cursor.close();
+        }
+    }
+
     public List<Body> getBodies(UUID userId) {
         List<Body> bodies =  new ArrayList<>();
 

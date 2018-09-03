@@ -1,6 +1,8 @@
 package com.github.dentou.fitnessassistant;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -90,10 +92,34 @@ public class ProgressFragment extends Fragment {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Body body = new Body(mUser.getId());
-                Log.i(TAG, "New body created for user " + mUser.getName() + " with id " + body.getId());
-                BodyHandler.get(getActivity()).addBody(body);
-                mCallbacks.onBodyCreated(body);
+
+                final Body latestBody = BodyHandler.get(getActivity()).getLatestBody(mUser.getId());
+                final Body body = new Body(mUser.getId());
+
+                if (latestBody == null ||
+                        (new DateTime(latestBody.getDate()).getDayOfWeek() != new DateTime(body.getDate()).getDayOfWeek())) {
+
+                    Log.i(TAG, "New body created for user " + mUser.getName() + " with id " + body.getId());
+                    BodyHandler.get(getActivity()).addBody(body);
+                    mCallbacks.onBodyCreated(body);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage("You have already created a record today. Do you want to edit it?");
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mCallbacks.onBodyCreated(latestBody);
+                            }
+                    });
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
 

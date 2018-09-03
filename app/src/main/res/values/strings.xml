@@ -4,6 +4,9 @@
     <string name="integer_format">%d</string>
     <string name="float_format">%.2f</string>
 
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
     <string name="drawer_profile">Profile</string>
     <string name="drawer_progress">Progress</string>
     <string name="drawer_exercises">Exercises</string>
