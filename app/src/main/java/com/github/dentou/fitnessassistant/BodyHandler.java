@@ -10,6 +10,7 @@ import com.github.dentou.fitnessassistant.database.FitnessBaseHelper;
 import com.github.dentou.fitnessassistant.database.FitnessDbSchema.BodyTable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ public class BodyHandler {
         if (sBodyHandler == null) {
             sBodyHandler = new BodyHandler(context);
         }
+
         return sBodyHandler;
     }
 

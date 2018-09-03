@@ -12,7 +12,7 @@
         android:windowSoftInputMode="adjustPan">
 
         <activity android:name=".MainActivity"
-            android:launchMode="singleTop">
+            android:launchMode="standard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

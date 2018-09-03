@@ -3,6 +3,7 @@ package com.github.dentou.fitnessassistant;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -115,10 +116,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
+    protected void onPostResume() {
+        super.onPostResume();
+        if (mUser == null) {
+            List<User> users = UserHandler.get(this).getUsers();
+            if (users != null && !users.isEmpty()) {
+                mUser = users.get(0);
+            }
+            if (mUser != null) {
+                mDrawer.setSelection(mDrawer.getCurrentSelection(), true);
+            }
+        }
+
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

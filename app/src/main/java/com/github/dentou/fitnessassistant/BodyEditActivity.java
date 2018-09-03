@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -56,8 +57,9 @@ public class BodyEditActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 deleteInvalidBody();
-                NavUtils.navigateUpFromSameTask(this);
+                finish();
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

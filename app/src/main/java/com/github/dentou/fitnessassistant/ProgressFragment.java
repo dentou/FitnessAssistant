@@ -6,14 +6,23 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.joda.time.Period;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class ProgressFragment extends Fragment {
@@ -24,6 +33,8 @@ public class ProgressFragment extends Fragment {
     private User mUser;
     private Callbacks mCallbacks;
     private FloatingActionButton mFab;
+    private GraphView mGraph;
+    private LineGraphSeries<DataPoint> mPercentFatSeries;
 
     public static ProgressFragment newInstance(UUID userId) {
         Bundle args = new Bundle();
@@ -86,14 +97,78 @@ public class ProgressFragment extends Fragment {
             }
         });
 
+        mGraph = (GraphView) view.findViewById(R.id.graph);
+        mGraph.setTitle("% Body Fat");
+        mGraph.getViewport().setScalable(true);
+
+        mGraph.getViewport().setYAxisBoundsManual(true);
+        mGraph.getViewport().setMinY(0);
+        mGraph.getViewport().setMaxY(100);
+
+        mPercentFatSeries = new LineGraphSeries<>();
+        mPercentFatSeries.setDrawDataPoints(true);
+        mPercentFatSeries.setDrawBackground(true);
+        mPercentFatSeries.setAnimated(true);
+        mGraph.addSeries(mPercentFatSeries);
+
+
+
+        // set date label formatter
+        mGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
+        mGraph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+
+        // as we use dates as labels, the human rounding to nice readable numbers
+        // is not necessary
+        mGraph.getGridLabelRenderer().setHumanRounding(false);
+
         updateUI();
 
         return view;
     }
 
+
     private void updateUI() {
         mUser = UserHandler.get(getActivity()).getUser(mUser.getId());
 
         // todo
+        updateGraph();
     }
+
+    private void updateGraph() {
+        List<Body> bodies = BodyHandler.get(getActivity()).getBodies(mUser.getId());
+        if (bodies.isEmpty()) {
+            return;
+        }
+        List<BodyIndex> indices = FitnessAnalyzer.analyze(mUser, bodies);
+        DataPoint[] points = createPercentFatDataPoints(indices);
+        mPercentFatSeries.resetData(points);
+
+        // set manual x bounds to have nice steps
+        mGraph.getViewport().setMinX(points[0].getX());
+        mGraph.getViewport().setMaxX(points[points.length > 3 ? 2 : points.length - 1].getX());
+        mGraph.getViewport().setXAxisBoundsManual(true);
+        mGraph.getViewport().scrollToEnd();
+
+    }
+
+
+    private DataPoint[] createPercentFatDataPoints(List<BodyIndex> indices) {
+        List<DataPoint> points = new ArrayList<>();
+        DateTime lastDate = null;
+        for (BodyIndex index : indices) {
+            DateTime currentDate = new DateTime(index.getDate());
+            if (lastDate == null) {
+                points.add(new DataPoint(index.getDate(), index.getFatPercentage()));
+            } else if (currentDate.getDayOfWeek() != lastDate.getDayOfWeek()) {
+                points.add(new DataPoint(index.getDate(), index.getFatPercentage()));
+            } else if (new Period(lastDate, currentDate).getHours() > 24) {
+                points.add(new DataPoint(index.getDate(), index.getFatPercentage()));
+            }
+            lastDate = currentDate;
+
+        }
+        return points.toArray(new DataPoint[points.size()]);
+    }
+
+
 }

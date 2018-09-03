@@ -1,13 +1,30 @@
 package com.github.dentou.fitnessassistant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FitnessAnalyzer {
 
-    public static double computePercentBodyFat(User user, Body body) {
-        return computePercentBodyFat(user.getAge(), user.getGender() == User.MALE,
+    public static List<BodyIndex> analyze(User user, List<Body> bodies) {
+        List<BodyIndex> results = new ArrayList<>();
+        for (Body body : bodies) {
+            results.add(analyze(user, body));
+        }
+        return results;
+    }
+
+    public static BodyIndex analyze(User user, Body body) {
+        BodyIndex result = new BodyIndex(user.getId(), body.getId(), body.getDate());
+        result.setFatPercentage(computeBodyFatPercentage(user, body));
+        return result;
+    }
+
+    public static float computeBodyFatPercentage(User user, Body body) {
+        return computeBodyFatPercentage(user.getAge(), user.getGender() == User.MALE,
                 body.getBiceps(), body.getTriceps(), body.getSubscapular(), body.getSuprailiac());
     }
 
-    public static double computePercentBodyFat(int age, boolean male,
+    public static float computeBodyFatPercentage(int age, boolean male,
                        int biceps, int triceps, int subscapular, int suprailiac) {
         double L = Math.log10(biceps + triceps + subscapular + suprailiac);
         double a = 0;
@@ -54,7 +71,7 @@ public class FitnessAnalyzer {
             }
         }
 
-        double D = a - b * L;
+        float D = (float) (a - b * L);
         return (495 / D) - 450;
     }
 }
