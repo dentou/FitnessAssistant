@@ -18,15 +18,14 @@ public class UserCursorWrapper extends CursorWrapper {
     public User getUser() {
         String uuidString = getString(getColumnIndex(UserTable.Cols.UUID));
         String name = getString(getColumnIndex(UserTable.Cols.NAME));
+        int gender = getInt(getColumnIndex(UserTable.Cols.GENDER));
         long dob = getLong(getColumnIndex(UserTable.Cols.DATE_OF_BIRTH));
-        float height = getFloat(getColumnIndex(UserTable.Cols.HEIGHT));
-        float weight = getFloat(getColumnIndex(UserTable.Cols.WEIGHT));
+
 
         User user = new User(UUID.fromString(uuidString));
         user.setName(name);
+        user.setGender(gender);
         user.setDateOfBirth(new Date(dob));
-        user.setHeight(height);
-        user.setWeight(weight);
 
         return user;
     }

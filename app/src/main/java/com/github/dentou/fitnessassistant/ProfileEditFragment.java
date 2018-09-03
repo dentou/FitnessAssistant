@@ -2,9 +2,7 @@ package com.github.dentou.fitnessassistant;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -19,9 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,12 +34,11 @@ public class ProfileEditFragment extends Fragment {
 
     private User mUser;
     private EditText mNameField;
+    private RadioGroup mGenderRadio;
     private Button mDateButton;
-    private EditText mHeightField;
-    private EditText mWeightField;
+
     private TextInputLayout mNameTil;
-    private TextInputLayout mHeightTil;
-    private TextInputLayout mWeightTil;
+
 
     private boolean mSaveButtonEnabled = false;
 
@@ -87,13 +83,7 @@ public class ProfileEditFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() == 0) {
-                    mNameTil.setError(getString(R.string.profile_name_error));
-                    return;
-                }
 
-                mNameTil.setError(null);
-                mUser.setName(charSequence.toString());
             }
 
             @Override
@@ -101,6 +91,10 @@ public class ProfileEditFragment extends Fragment {
                 updateSaveButtonState();
             }
         });
+
+        mGenderRadio = (RadioGroup) view.findViewById(R.id.profile_gender);
+        mGenderRadio.check(mUser.getGender() == User.MALE ? R.id.profile_male : R.id.profile_female);
+
 
         mDateButton = (Button) view.findViewById(R.id.profile_date_button);
         updateDate();
@@ -114,73 +108,12 @@ public class ProfileEditFragment extends Fragment {
             }
         });
 
-        mHeightTil = (TextInputLayout) view.findViewById(R.id.profile_height_til);
-
-        mHeightField = (EditText) view.findViewById(R.id.profile_height_edit);
-        mHeightField.setText(String.format(Locale.US, "%.2f", mUser.getHeight()));
-        mHeightField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() == 0 ) {
-                    mHeightTil.setError(getString(R.string.profile_height_error));
-                    return;
-                }
-                float height = Float.parseFloat(charSequence.toString());
-                if (height <= 0) {
-                    mHeightTil.setError(getString(R.string.profile_height_error));
-                    return;
-                }
-                mHeightTil.setError(null);
-                mUser.setHeight(height);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                updateSaveButtonState();
-            }
-        });
-
-        mWeightTil = (TextInputLayout) view.findViewById(R.id.profile_weight_til);
-
-        mWeightField = (EditText) view.findViewById(R.id.profile_weight_edit);
-        mWeightField.setText(String.format(Locale.US, "%.2f", mUser.getWeight()));
-        mWeightField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() == 0) {
-                    mWeightTil.setError(getString(R.string.profile_weight_error));
-                    return;
-                }
-                float weight = Float.parseFloat(charSequence.toString());
-                if (weight <= 0) {
-                    mWeightTil.setError(getString(R.string.profile_weight_error));
-                    return;
-                }
-                mWeightTil.setError(null);
-                mUser.setWeight(weight);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                updateSaveButtonState();
-            }
-        });
-
 
         updateSaveButtonState();
 
         return view;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -198,7 +131,7 @@ public class ProfileEditFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_profile_edit, menu);
+        inflater.inflate(R.menu.fragment_edit, menu);
 
         MenuItem saveButton = (MenuItem) menu.findItem(R.id.profile_save);
         if (mSaveButtonEnabled) {
@@ -224,6 +157,9 @@ public class ProfileEditFragment extends Fragment {
 
 
     private void updateUser() {
+        mUser.setName(mNameField.getText().toString());
+        mUser.setGender(mGenderRadio.getCheckedRadioButtonId() == R.id.profile_male ? User.MALE : User.FEMALE);
+
         UserHandler.get(getActivity()).updateUser(mUser);
     }
 
@@ -232,21 +168,23 @@ public class ProfileEditFragment extends Fragment {
     }
 
     private void updateSaveButtonState() {
-        if (mNameField.getText().length() != 0
-            && mHeightField.getText().length() != 0
-            && mWeightField.getText().length() != 0) {
-
-            if (mSaveButtonEnabled) {
-                return;
-            }
-            mSaveButtonEnabled = true;
-        } else {
-            if (!mSaveButtonEnabled) {
-                return;
-            }
-            mSaveButtonEnabled = false;
-        }
+        mSaveButtonEnabled = validateInputFields();
         getActivity().invalidateOptionsMenu();
     }
+
+    private boolean validateInputFields() {
+        if (mNameField.getText().length() == 0) {
+            mNameTil.setError(getString(R.string.profile_name_error));
+            return false;
+        } else {
+            mNameTil.setError(null);
+        }
+
+        return true;
+    }
+
+
+
+
 
 }

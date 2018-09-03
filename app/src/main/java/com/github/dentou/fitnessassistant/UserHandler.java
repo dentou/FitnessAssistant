@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class UserHandler {
 
-    private static UserHandler mUserHandler;
+    private static UserHandler sUserHandler;
 
     private Context mContext;
     private SQLiteDatabase mDatabase;
@@ -26,10 +26,10 @@ public class UserHandler {
     }
 
     public static UserHandler get(Context context) {
-        if (mUserHandler == null) {
-            mUserHandler = new UserHandler(context);
+        if (sUserHandler == null) {
+            sUserHandler = new UserHandler(context);
         }
-        return mUserHandler;
+        return sUserHandler;
     }
 
     public void addUser(User user) {
@@ -98,9 +98,9 @@ public class UserHandler {
         ContentValues values = new ContentValues();
         values.put(UserTable.Cols.UUID, user.getId().toString());
         values.put(UserTable.Cols.NAME, user.getName());
+        values.put(UserTable.Cols.GENDER, user.getGender());
         values.put(UserTable.Cols.DATE_OF_BIRTH, user.getDateOfBirth().getTime());
-        values.put(UserTable.Cols.HEIGHT, user.getHeight());
-        values.put(UserTable.Cols.WEIGHT, user.getWeight());
+
 
         return values;
     }

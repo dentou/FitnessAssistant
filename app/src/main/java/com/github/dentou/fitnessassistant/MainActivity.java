@@ -1,5 +1,6 @@
 package com.github.dentou.fitnessassistant;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,11 +23,22 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements ProfileEmptyFragment.Callbacks, ProfileFragment.Callbacks {
+        implements ProfileEmptyFragment.Callbacks, ProfileFragment.Callbacks, ProgressFragment.Callbacks {
 
-//    private DrawerLayout mDrawerLayout;
+    private static final String EXTRA_DRAWER_ITEM_ID = "com.github.dentou.fitnessassistant.drawer_item";
+
+    private static final long DRAWER_PROFILE_ID = 1;
+    private static final long DRAWER_PROGRESS_ID = 2;
 
     private User mUser;
+
+    private Drawer mDrawer;
+
+    public static Intent newIntent(Context packageContext, long drawerItemId) {
+        Intent intent = new Intent(packageContext, BodyEditActivity.class);
+        intent.putExtra(EXTRA_DRAWER_ITEM_ID, drawerItemId);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +50,12 @@ public class MainActivity extends AppCompatActivity
             mUser = users.get(0);
         }
 
-        PrimaryDrawerItem profileDrawerItem = new PrimaryDrawerItem()
+        long drawerItemId = getIntent().getLongExtra(EXTRA_DRAWER_ITEM_ID, DRAWER_PROFILE_ID);
+
+        final PrimaryDrawerItem profileDrawerItem = new PrimaryDrawerItem().withIdentifier(DRAWER_PROFILE_ID)
                 .withName(R.string.drawer_profile).withIcon(GoogleMaterial.Icon.gmd_person);
-        PrimaryDrawerItem reportsDrawerItem = new PrimaryDrawerItem()
-                .withName(R.string.drawer_reports).withIcon(GoogleMaterial.Icon.gmd_equalizer);
+        final PrimaryDrawerItem progressDrawerItem = new PrimaryDrawerItem().withIdentifier(DRAWER_PROGRESS_ID)
+                .withName(R.string.drawer_progress).withIcon(GoogleMaterial.Icon.gmd_equalizer);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,8 +65,10 @@ public class MainActivity extends AppCompatActivity
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withSelectionListEnabledForSingleProfile(false)
+                .withHeaderBackground(R.drawable.header)
                 .addProfiles(
-                        new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon(GoogleMaterial.Icon.gmd_person)
+                        new ProfileDrawerItem().withName("Huy Tran").withEmail("huytran.ee@gmail.com")
+                                .withIcon(R.drawable.sample_profile)
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
@@ -63,48 +79,80 @@ public class MainActivity extends AppCompatActivity
                 .build();
 
         //create the drawer and remember the `Drawer` result object
-        Drawer result = new DrawerBuilder()
+        mDrawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult)
+                .withHasStableIds(true)
                 .addDrawerItems(
                         profileDrawerItem,
                         new DividerDrawerItem(),
-                        reportsDrawerItem
+                        progressDrawerItem
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         // do something with the clicked item :D
-                        return true;
+                        if (mUser == null) {
+                            changeFragment(new ProfileEmptyFragment());
+                            return false;
+                        }
+                        if (drawerItem != null) {
+                            if (drawerItem.getIdentifier() == DRAWER_PROFILE_ID) {
+                                changeFragment(ProfileFragment.newInstance(mUser.getId()));
+                            } else if (drawerItem.getIdentifier() == DRAWER_PROGRESS_ID) {
+                                changeFragment(ProgressFragment.newInstance(mUser.getId()));
+                            }
+                        }
+                        return false;
                     }
                 })
+                .withSavedInstance(savedInstanceState)
                 .build();
 
+        mDrawer.setSelection(drawerItemId, true);
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState = mDrawer.saveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    public void changeFragment(Fragment newFragment) {
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
         if (fragment == null) {
-            if (mUser == null) {
-                fragment = new ProfileEmptyFragment();
-            } else {
-                fragment = ProfileFragment.newInstance(mUser.getId());
-            }
             fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment)
+                    .add(R.id.fragment_container, newFragment)
+                    .commit();
+        } else {
+            fm.beginTransaction()
+                    .replace(R.id.fragment_container, newFragment)
                     .commit();
         }
 
     }
 
     @Override
-    public void onProfileCreated(User user) {
-        Fragment fragment = ProfileFragment.newInstance(user.getId());
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+    public void onBackPressed() {
+        // Handle back press - close the drawer first and if the drawer is closed, close the activity
+        if (mDrawer != null && mDrawer.isDrawerOpen()) {
+            mDrawer.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
+    @Override
+    public void onProfileCreated(User user) {
         Intent intent = ProfileEditActivity.newIntent(this, user.getId());
         startActivity(intent);
     }
@@ -112,6 +160,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onProfileEdited(User user) {
         Intent intent = ProfileEditActivity.newIntent(this, user.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBodyCreated(Body body) {
+        Intent intent = BodyEditActivity.newIntent(this, body.getUserId(), body.getId());
         startActivity(intent);
     }
 }

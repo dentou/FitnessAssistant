@@ -22,15 +22,46 @@
             android:id="@+id/profile_name_til"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             app:errorEnabled="true">
 
-                <EditText
-                    android:id="@+id/profile_name_edit"
-                    android:inputType="text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+            <EditText
+                android:id="@+id/profile_name_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
 
         </android.support.design.widget.TextInputLayout>
+
+        <!-- Gender -->
+
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_gender_label"/>
+
+        <RadioGroup
+            android:id="@+id/profile_gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/profile_male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="@string/gender_male" />
+
+            <RadioButton
+                android:id="@+id/profile_female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gender_female" />
+
+        </RadioGroup>
 
         <!-- Date of birth -->
 
@@ -43,89 +74,10 @@
         <Button
             android:id="@+id/profile_date_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <!-- Height -->
-
-        <TextView
-            style="?android:listSeparatorTextViewStyle"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/profile_height_label"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="bottom">
+            android:layout_marginBottom="16dp" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/profile_height_til"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true">
 
-                <EditText
-                    android:id="@+id/profile_height_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:digits="0123456789."
-                    android:inputType="numberDecimal"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="80dp"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                android:text="m" />
-
-        </RelativeLayout>
-
-        <!-- Weight -->
-
-        <TextView
-            style="?android:listSeparatorTextViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/profile_weight_label"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="bottom">
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/profile_weight_til"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true">
-
-                <EditText
-                    android:id="@+id/profile_weight_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:digits="0123456789."
-                    android:inputType="numberDecimal"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="80dp"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                android:text="kg" />
-
-        </RelativeLayout>
 
     </LinearLayout>
 </ScrollView>

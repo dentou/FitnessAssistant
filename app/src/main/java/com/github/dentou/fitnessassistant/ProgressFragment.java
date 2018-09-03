@@ -6,38 +6,30 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-public class ProfileFragment extends Fragment {
+public class ProgressFragment extends Fragment {
 
-    private static final String TAG = "ProfileFragment";
+    public static final String TAG = "ProgressFragment";
     private static final String ARG_USER_ID = "user_id";
 
     private User mUser;
-    private FloatingActionButton mFab;
-    private TextView mNameView;
-    private TextView mGenderView;
-    private TextView mDateView;
-
     private Callbacks mCallbacks;
+    private FloatingActionButton mFab;
 
-    public static ProfileFragment newInstance(UUID userId) {
+    public static ProgressFragment newInstance(UUID userId) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_USER_ID, userId);
 
-        ProfileFragment fragment = new ProfileFragment();
+        ProgressFragment fragment = new ProgressFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,7 +38,7 @@ public class ProfileFragment extends Fragment {
      * Required interface for hosting activities
      */
     public interface Callbacks {
-        void onProfileEdited(User user);
+        void onBodyCreated(Body body);
     }
 
     @Override
@@ -55,13 +47,15 @@ public class ProfileFragment extends Fragment {
         mCallbacks = (Callbacks) context;
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         UUID userId = (UUID) getArguments().getSerializable(ARG_USER_ID);
         mUser = UserHandler.get(getActivity()).getUser(userId);
+
+        Log.i(TAG, "Bodies = " + BodyHandler.get(getActivity()).getBodies(userId).size());
+
     }
 
     @Override
@@ -70,44 +64,36 @@ public class ProfileFragment extends Fragment {
         updateUI();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
-        mFab = (FloatingActionButton) view.findViewById(R.id.profile_fab);
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCallbacks.onProfileEdited(mUser);
-            }
-        });
-
-        mNameView = (TextView) view.findViewById(R.id.profile_name_view);
-
-        mGenderView = (TextView) view.findViewById(R.id.profile_gender_view);
-
-
-        mDateView = (TextView) view.findViewById(R.id.profile_date_view);
-
-
-        updateUI();
-
-        return view;
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_progress, container, false);
+
+        mFab = (FloatingActionButton) view.findViewById(R.id.progress_fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Body body = new Body(mUser.getId());
+                Log.i(TAG, "New body created for user " + mUser.getName() + " with id " + body.getId());
+                BodyHandler.get(getActivity()).addBody(body);
+                mCallbacks.onBodyCreated(body);
+            }
+        });
+
+        updateUI();
+
+        return view;
+    }
 
     private void updateUI() {
         mUser = UserHandler.get(getActivity()).getUser(mUser.getId());
 
-        mNameView.setText(mUser.getName());
-        mGenderView.setText(mUser.getGender() == User.MALE ? R.string.gender_male : R.string.gender_female);
-        mDateView.setText(new SimpleDateFormat("EEE, d MMM yyyy", Locale.US).format(mUser.getDateOfBirth()));
+        // todo
     }
 }

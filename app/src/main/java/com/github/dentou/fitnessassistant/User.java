@@ -1,14 +1,20 @@
 package com.github.dentou.fitnessassistant;
 
+import org.joda.time.DateTime;
+import org.joda.time.Years;
+
 import java.util.Date;
 import java.util.UUID;
 
 public class User {
+
+    public static final int FEMALE = 0;
+    public static final int MALE = 1;
+
     private final UUID mId;
     private String mName;
+    private int mGender = FEMALE;
     private Date mDateOfBirth;
-    private float mHeight = 1.5f;
-    private float mWeight = 50;
 
     public User() {
         this(UUID.randomUUID());
@@ -32,6 +38,14 @@ public class User {
         mName = name;
     }
 
+    public int getGender() {
+        return mGender;
+    }
+
+    public void setGender(int gender) {
+        mGender = gender;
+    }
+
     public Date getDateOfBirth() {
         return mDateOfBirth;
     }
@@ -40,20 +54,10 @@ public class User {
         mDateOfBirth = dateOfBirth;
     }
 
-    public float getHeight() {
-        return mHeight;
-    }
-
-    public void setHeight(float height) {
-        mHeight = height;
-    }
-
-    public float getWeight() {
-        return mWeight;
-    }
-
-    public void setWeight(float weight) {
-        mWeight = weight;
+    public int getAge() {
+        DateTime dob = new DateTime(mDateOfBirth);
+        DateTime current = new DateTime(new Date());
+        return Years.yearsBetween(dob, current).getYears();
     }
 
 }
