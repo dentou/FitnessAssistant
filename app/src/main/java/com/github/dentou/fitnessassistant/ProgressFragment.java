@@ -154,18 +154,8 @@ public class ProgressFragment extends Fragment {
 
     private DataPoint[] createPercentFatDataPoints(List<BodyIndex> indices) {
         List<DataPoint> points = new ArrayList<>();
-        DateTime lastDate = null;
         for (BodyIndex index : indices) {
-            DateTime currentDate = new DateTime(index.getDate());
-            if (lastDate == null) {
-                points.add(new DataPoint(index.getDate(), index.getFatPercentage()));
-            } else if (currentDate.getDayOfWeek() != lastDate.getDayOfWeek()) {
-                points.add(new DataPoint(index.getDate(), index.getFatPercentage()));
-            } else if (new Period(lastDate, currentDate).getHours() > 24) {
-                points.add(new DataPoint(index.getDate(), index.getFatPercentage()));
-            }
-            lastDate = currentDate;
-
+            points.add(new DataPoint(index.getDate(), index.getFatPercentage()));
         }
         return points.toArray(new DataPoint[points.size()]);
     }

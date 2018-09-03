@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final long DRAWER_PROFILE_ID = 1;
     private static final long DRAWER_PROGRESS_ID = 2;
+    private static final long DRAWER_SETTINGS_ID = 3;
 
     private User mUser;
 
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity
                 .withName(R.string.drawer_profile).withIcon(GoogleMaterial.Icon.gmd_person);
         final PrimaryDrawerItem progressDrawerItem = new PrimaryDrawerItem().withIdentifier(DRAWER_PROGRESS_ID)
                 .withName(R.string.drawer_progress).withIcon(GoogleMaterial.Icon.gmd_equalizer);
+        final PrimaryDrawerItem settingsDrawerItem = new PrimaryDrawerItem().withIdentifier(DRAWER_SETTINGS_ID)
+                .withName(R.string.drawer_settings).withIcon(GoogleMaterial.Icon.gmd_settings);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,8 +90,9 @@ public class MainActivity extends AppCompatActivity
                 .withHasStableIds(true)
                 .addDrawerItems(
                         profileDrawerItem,
+                        progressDrawerItem,
                         new DividerDrawerItem(),
-                        progressDrawerItem
+                        settingsDrawerItem
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
