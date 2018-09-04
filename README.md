@@ -20,6 +20,7 @@
 * [ ] Lean muscle mass
 * [ ] BMI
 * [ ] BMR
+* [ ] Calories
 
 ### Progress tracking
 * [x] Records stored on device
@@ -32,10 +33,11 @@
    * [x] Suprailiac
    * [x] Height
    * [x] Weight
-* [ ] Records stored online
 * [ ] Progress display
    * [ ] Display ALL values in a time line
    * [ ] Display representative (average) daily values in form of a line chart
+* [ ] Set goal
+* [ ] Records stored online
 
 ### Suggestion
 * [ ] Diet
@@ -45,5 +47,6 @@
 * [x] English (default)
 * [ ] Vietnamese
 * [ ] Korean
+* [ ] German
 
 ## References
