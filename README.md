@@ -16,6 +16,10 @@
 
 ### Analysis
 * [x] Body fat percentage
+* [ ] Body fat mass
+* [ ] Lean muscle mass
+* [ ] BMI
+* [ ] BMR
 
 ### Progress tracking
 * [x] Records stored on device
