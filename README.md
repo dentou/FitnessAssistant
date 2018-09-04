@@ -1,7 +1,7 @@
 # FitnessAssistant
 ## Todo List
 
-## User profiles
+### User profiles
 * [x] Single user
    * [x] ID
    * [x] Name
@@ -46,3 +46,4 @@
 * [ ] Vietnamese
 * [ ] Korean
 
+## References
