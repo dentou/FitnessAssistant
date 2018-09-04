@@ -57,4 +57,8 @@
 * [ ] FAQ/Tutorials
 * [ ] Help email
 
+### Final steps
+* [ ] License considerations
+* [ ] Publication
+
 ## References
