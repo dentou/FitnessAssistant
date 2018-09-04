@@ -20,7 +20,7 @@
 * [ ] Lean muscle mass
 * [ ] BMI
 * [ ] BMR
-* [ ] Calories
+* [ ] Daily calories needs
 
 ### Progress tracking
 * [x] Records stored on device
@@ -48,5 +48,13 @@
 * [ ] Vietnamese
 * [ ] Korean
 * [ ] German
+
+### Settings
+* [ ] Change language
+* [ ] Delete profile
+
+### Support
+* [ ] FAQ/Tutorials
+* [ ] Help email
 
 ## References
