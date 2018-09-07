@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,10 +19,14 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Locale;
 import java.util.UUID;
 
 public class BodyEditFragment extends Fragment {
+
+    private static final String TAG = "BodyEditFragment";
 
     private static final String ARG_USER_ID = "user_id";
     private static final String ARG_BODY_ID = "body_id";
@@ -135,12 +140,19 @@ public class BodyEditFragment extends Fragment {
 
     private void updateBody() {
 
-        mBody.setBiceps(Integer.parseInt(mBicepsField.getText().toString()));
-        mBody.setTriceps(Integer.parseInt(mTricepsField.getText().toString()));
-        mBody.setSubscapular(Integer.parseInt(mSubscapularField.getText().toString()));
-        mBody.setSuprailiac(Integer.parseInt(mSuprailiacField.getText().toString()));
-        mBody.setHeight(Float.parseFloat(mHeightField.getText().toString()));
-        mBody.setWeight(Float.parseFloat(mWeightField.getText().toString()));
+        try {
+            NumberFormat nfi = NumberFormat.getIntegerInstance();
+            NumberFormat nf = NumberFormat.getInstance();
+            mBody.setBiceps(nfi.parse(mBicepsField.getText().toString()).intValue());
+            mBody.setTriceps(nfi.parse(mTricepsField.getText().toString()).intValue());
+            mBody.setSubscapular(nfi.parse(mSubscapularField.getText().toString()).intValue());
+            mBody.setSuprailiac(nfi.parse(mSuprailiacField.getText().toString()).intValue());
+            mBody.setHeight(nf.parse(mHeightField.getText().toString()).floatValue());
+            mBody.setWeight(nf.parse(mWeightField.getText().toString()).floatValue());
+        } catch (ParseException e) {
+            Log.e(TAG, "Unable to update body", e);
+        }
+
 
         BodyHandler.get(getActivity()).updateBody(mBody);
     }
@@ -187,8 +199,8 @@ public class BodyEditFragment extends Fragment {
         }
         float value = 0;
         try {
-            value = Float.parseFloat(inputField.getText().toString());
-        } catch (NumberFormatException e) {
+            value = NumberFormat.getNumberInstance().parse(inputField.getText().toString()).floatValue();
+        } catch (ParseException e) {
             return false;
         }
         if (value <= 0) {
@@ -206,8 +218,8 @@ public class BodyEditFragment extends Fragment {
         }
         int value = 0;
         try {
-            value = Integer.parseInt(inputField.getText().toString());
-        } catch (NumberFormatException e) {
+            value = NumberFormat.getIntegerInstance().parse(inputField.getText().toString()).intValue();
+        } catch (ParseException e) {
             return false;
         }
         if (value <= 0) {
