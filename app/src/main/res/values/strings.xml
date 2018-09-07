@@ -41,7 +41,7 @@
 
     <!-- Body -->
     <string name="body_measurements_label">Measurements</string>
-    <string name="body_measurements_error">Measurement must be non-negative and smaller than 2 billion.</string>
+    <string name="body_measurements_error">Measurement must be non-negative and smaller than 2 147 483 647.</string>
     <string name="body_others_label">Others</string>
     <string name="skinfold_unit">mm</string>
     <string name="body_use_last_values">Use last values</string>

@@ -32,13 +32,11 @@ public class BodyEditFragment extends Fragment {
     private static final String ARG_BODY_ID = "body_id";
 
     private User mUser;
+    private Body mLastestBody;
     private Body mBody;
-    private TextInputLayout mBicepsTil;
-    private TextInputLayout mTricepsTil;
-    private TextInputLayout mSubscapularTil;
-    private TextInputLayout mSuprailiacTil;
-    private TextInputLayout mHeightTil;
-    private TextInputLayout mWeightTil;
+
+
+    private CheckBox mUseLastValuesCheckbox;
 
     private EditText mBicepsField;
     private EditText mTricepsField;
@@ -49,6 +47,7 @@ public class BodyEditFragment extends Fragment {
 
 
     private boolean mSaveButtonEnabled = false;
+    private boolean mUseLastValues = false;
 
 
     public static BodyEditFragment newInstance(UUID userId, UUID bodyId) {
@@ -72,6 +71,8 @@ public class BodyEditFragment extends Fragment {
         UUID bodyId = (UUID) getArguments().getSerializable(ARG_BODY_ID);
         mBody = BodyHandler.get(getActivity()).getBody(userId, bodyId);
 
+        mLastestBody = BodyHandler.get(getActivity()).getLatestBody(userId);
+
     }
 
     @Nullable
@@ -79,29 +80,32 @@ public class BodyEditFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_body_edit, container, false);
 
-        mBicepsTil = (TextInputLayout) view.findViewById(R.id.body_biceps_til);
         mBicepsField = (EditText) view.findViewById(R.id.body_biceps_edit);
         mBicepsField.addTextChangedListener(new BodyTextWatcher());
 
-        mTricepsTil = (TextInputLayout) view.findViewById(R.id.body_triceps_til);
         mTricepsField = (EditText) view.findViewById(R.id.body_triceps_edit);
         mTricepsField.addTextChangedListener(new BodyTextWatcher());
 
-        mSubscapularTil = (TextInputLayout) view.findViewById(R.id.body_subscapular_til);
         mSubscapularField = (EditText) view.findViewById(R.id.body_subscapular_edit);
         mSubscapularField.addTextChangedListener(new BodyTextWatcher());
 
-        mSuprailiacTil = (TextInputLayout) view.findViewById(R.id.body_suprailiac_til);
         mSuprailiacField = (EditText) view.findViewById(R.id.body_suprailiac_edit);
         mSuprailiacField.addTextChangedListener(new BodyTextWatcher());
 
-        mHeightTil = (TextInputLayout) view.findViewById(R.id.body_height_til);
         mHeightField = (EditText) view.findViewById(R.id.body_height_edit);
         mHeightField.addTextChangedListener(new BodyTextWatcher());
 
-        mWeightTil = (TextInputLayout) view.findViewById(R.id.body_weight_til);
         mWeightField = (EditText) view.findViewById(R.id.body_weight_edit);
         mWeightField.addTextChangedListener(new BodyTextWatcher());
+
+        mUseLastValuesCheckbox = (CheckBox) view.findViewById(R.id.body_use_last_value_checkbox);
+        mUseLastValuesCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                mUseLastValues = isChecked;
+                updateInputFields();
+            }
+        });
 
         updateInputFields();
         updateSaveButtonState();
@@ -159,6 +163,16 @@ public class BodyEditFragment extends Fragment {
 
     private void updateInputFields() {
 
+        if (mUseLastValues) {
+            if (mLastestBody != null) {
+                mBody.setHeight(mLastestBody.getHeight());
+                mBody.setWeight(mLastestBody.getWeight());
+            }
+        }
+
+        mHeightField.setEnabled(!mUseLastValues);
+        mWeightField.setEnabled(!mUseLastValues);
+
         mBicepsField.setText(getString(R.string.integer_format, mBody.getBiceps()));
         mTricepsField.setText(getString(R.string.integer_format, mBody.getTriceps()));
         mSubscapularField.setText(getString(R.string.integer_format, mBody.getSubscapular()));
@@ -176,12 +190,12 @@ public class BodyEditFragment extends Fragment {
 
     private boolean validateInputFields() {
 
-        if (!(validateIntegerInputField(mBicepsField, mBicepsTil, R.string.body_measurements_error)
-        && validateIntegerInputField(mTricepsField, mTricepsTil, R.string.body_measurements_error)
-        && validateIntegerInputField(mSubscapularField, mSubscapularTil, R.string.body_measurements_error)
-        && validateIntegerInputField(mSuprailiacField, mSuprailiacTil, R.string.body_measurements_error)
-        && validateFloatInputField(mHeightField, mHeightTil, R.string.body_measurements_error)
-        && validateFloatInputField(mWeightField, mWeightTil, R.string.body_measurements_error)
+        if (!(validateIntegerInputField(mBicepsField, R.string.body_measurements_error)
+        && validateIntegerInputField(mTricepsField, R.string.body_measurements_error)
+        && validateIntegerInputField(mSubscapularField, R.string.body_measurements_error)
+        && validateIntegerInputField(mSuprailiacField, R.string.body_measurements_error)
+        && validateFloatInputField(mHeightField, R.string.body_measurements_error)
+        && validateFloatInputField(mWeightField, R.string.body_measurements_error)
         )) {
 
             return false;
@@ -191,9 +205,9 @@ public class BodyEditFragment extends Fragment {
     }
 
 
-    private boolean validateFloatInputField(EditText inputField, TextInputLayout til, int errorResId) {
+    private boolean validateFloatInputField(EditText inputField, int errorResId) {
 
-        til.setError(getString(errorResId));
+        inputField.setError(getString(errorResId));
         if (inputField.getText().length() == 0 ) {
             return false;
         }
@@ -206,13 +220,13 @@ public class BodyEditFragment extends Fragment {
         if (value <= 0) {
             return false;
         }
-        til.setError(null);
+        inputField.setError(null);
         return true;
     }
 
-    private boolean validateIntegerInputField(EditText inputField, TextInputLayout til, int errorResId) {
+    private boolean validateIntegerInputField(EditText inputField, int errorResId) {
 
-        til.setError(getString(errorResId));
+        inputField.setError(getString(errorResId));
         if (inputField.getText().length() == 0 ) {
             return false;
         }
@@ -225,7 +239,7 @@ public class BodyEditFragment extends Fragment {
         if (value <= 0) {
             return false;
         }
-        til.setError(null);
+        inputField.setError(null);
         return true;
     }
 

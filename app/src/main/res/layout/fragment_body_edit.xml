@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,137 +20,126 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/body_biceps_til"
+
+        <EditText
+            android:id="@+id/body_biceps_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:digits="0123456789"
+            android:hint="@string/body_biceps_hint"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:nextFocusForward="@+id/body_triceps_edit"
+            android:selectAllOnFocus="true"
             app:layout_constraintEnd_toStartOf="@+id/textView"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/measurement_label">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/body_biceps_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:digits="0123456789"
-                android:hint="@string/body_biceps_hint"
-                android:nextFocusForward="@+id/body_triceps_edit"
-                android:selectAllOnFocus="true"
-                android:imeOptions="actionNext"
-                android:inputType="number" />
-        </android.support.design.widget.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/measurement_label" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
             android:text="@string/skinfold_unit"
-            app:layout_constraintBottom_toBottomOf="@+id/body_biceps_til"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/body_biceps_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/body_biceps_edit" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/body_triceps_til"
+
+        <EditText
+            android:id="@+id/body_triceps_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:digits="0123456789"
+            android:hint="@string/body_triceps_hint"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:nextFocusForward="@+id/body_subscapular_edit"
+            android:selectAllOnFocus="true"
             app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/body_biceps_til">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/body_triceps_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:digits="0123456789"
-                android:hint="@string/body_triceps_hint"
-                android:nextFocusForward="@+id/body_subscapular_edit"
-                android:selectAllOnFocus="true"
-                android:imeOptions="actionNext"
-                android:inputType="number" />
-        </android.support.design.widget.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/body_biceps_edit" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
             android:text="@string/skinfold_unit"
-            app:layout_constraintBottom_toBottomOf="@+id/body_triceps_til"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/body_triceps_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/body_triceps_edit" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/body_subscapular_til"
+
+        <EditText
+            android:id="@+id/body_subscapular_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
+            android:digits="0123456789"
+            android:hint="@string/body_subscapular_hint"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:nextFocusForward="@+id/body_suprailiac_edit"
+            android:selectAllOnFocus="true"
             app:layout_constraintEnd_toStartOf="@+id/textView3"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/body_triceps_til">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/body_subscapular_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:digits="0123456789"
-                android:hint="@string/body_subscapular_hint"
-                android:nextFocusForward="@+id/body_suprailiac_edit"
-                android:selectAllOnFocus="true"
-                android:imeOptions="actionNext"
-                android:inputType="number" />
-        </android.support.design.widget.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/body_triceps_edit" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
             android:text="@string/skinfold_unit"
-            app:layout_constraintBottom_toBottomOf="@+id/body_subscapular_til"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/body_subscapular_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/body_subscapular_edit" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/body_suprailiac_til"
+
+        <EditText
+            android:id="@+id/body_suprailiac_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:digits="0123456789"
+            android:hint="@string/body_suprailiac_hint"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:nextFocusForward="@+id/body_height_edit"
+            android:selectAllOnFocus="true"
             app:layout_constraintEnd_toStartOf="@+id/textView6"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/body_subscapular_til">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/body_suprailiac_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:digits="0123456789"
-                android:hint="@string/body_suprailiac_hint"
-                android:nextFocusForward="@+id/body_height_edit"
-                android:selectAllOnFocus="true"
-                android:imeOptions="actionNext"
-                android:inputType="number" />
-        </android.support.design.widget.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/body_subscapular_edit" />
 
         <TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
             android:text="@string/skinfold_unit"
-            app:layout_constraintBottom_toBottomOf="@+id/body_suprailiac_til"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/body_suprailiac_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/body_suprailiac_edit" />
 
         <TextView
             android:id="@+id/textView7"
@@ -163,72 +151,76 @@
             android:text="@string/body_others_label"
             android:textAllCaps="true"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/body_suprailiac_til" />
+            app:layout_constraintTop_toBottomOf="@+id/body_suprailiac_edit" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/body_height_til"
+
+        <EditText
+            android:id="@+id/body_height_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:digits="0123456789."
+            android:hint="@string/body_height_hint"
+            android:imeOptions="actionNext"
+            android:inputType="numberDecimal"
+            android:nextFocusForward="@+id/body_weight_edit"
+            android:selectAllOnFocus="true"
             app:layout_constraintEnd_toStartOf="@+id/textView8"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView7">
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/body_height_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:digits="0123456789."
-                android:hint="@string/body_height_hint"
-                android:nextFocusForward="@+id/body_weight_edit"
-                android:selectAllOnFocus="true"
-                android:imeOptions="actionNext"
-                android:inputType="numberDecimal" />
-        </android.support.design.widget.TextInputLayout>
 
         <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
             android:text="@string/body_height_unit"
-            app:layout_constraintBottom_toBottomOf="@+id/body_height_til"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/body_height_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/body_height_edit" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/body_weight_til"
+
+        <EditText
+            android:id="@+id/body_weight_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:digits="0123456789."
+            android:hint="@string/body_weight_hint"
+            android:imeOptions="actionDone"
+            android:inputType="numberDecimal"
+            android:selectAllOnFocus="true"
             app:layout_constraintEnd_toStartOf="@+id/textView9"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/body_height_til">
+            app:layout_constraintTop_toBottomOf="@+id/body_height_edit" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/body_weight_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:digits="0123456789."
-                android:hint="@string/body_weight_hint"
-                android:selectAllOnFocus="true"
-                android:imeOptions="actionDone"
-                android:inputType="numberDecimal" />
-        </android.support.design.widget.TextInputLayout>
 
         <TextView
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
             android:text="@string/body_weight_unit"
-            app:layout_constraintBottom_toBottomOf="@+id/body_weight_til"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/body_weight_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/body_weight_edit" />
+
+        <CheckBox
+            android:id="@+id/body_use_last_value_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/body_use_last_values"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView7"
+            app:layout_constraintEnd_toEndOf="@+id/textView6" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -37,8 +37,6 @@ public class ProfileEditFragment extends Fragment {
     private RadioGroup mGenderRadio;
     private Button mDateButton;
 
-    private TextInputLayout mNameTil;
-
 
     private boolean mSaveButtonEnabled = false;
 
@@ -70,8 +68,6 @@ public class ProfileEditFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_edit, container, false);
-
-        mNameTil = (TextInputLayout) view.findViewById(R.id.profile_name_til);
 
         mNameField = (EditText) view.findViewById(R.id.profile_name_edit);
         mNameField.setText(mUser.getName());
@@ -174,10 +170,10 @@ public class ProfileEditFragment extends Fragment {
 
     private boolean validateInputFields() {
         if (mNameField.getText().length() == 0) {
-            mNameTil.setError(getString(R.string.profile_name_error));
+            mNameField.setError(getString(R.string.profile_name_error));
             return false;
         } else {
-            mNameTil.setError(null);
+            mNameField.setError(null);
         }
 
         return true;
