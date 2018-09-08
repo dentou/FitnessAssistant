@@ -16,6 +16,14 @@ public class BodyIndex {
         mDate = date;
     }
 
+    public UUID getUserId() {
+        return mUserId;
+    }
+
+    public UUID getBodyId() {
+        return mBodyId;
+    }
+
     public float getFatPercentage() {
         return mFatPercentage;
     }

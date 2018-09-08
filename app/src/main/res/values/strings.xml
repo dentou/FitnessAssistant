@@ -60,4 +60,7 @@
     <string name="body_weight_format">%1$.1f kg</string>
     <string name="body_weight_unit">kg</string>
 
+    <!-- Body Index -->
+    <string name="bodyindex_percentfat_format">%% Body Fat: %.2f%%</string>
+
 </resources>

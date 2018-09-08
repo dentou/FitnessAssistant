@@ -8,11 +8,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.github.vipulasri.timelineview.TimelineView;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
@@ -20,8 +24,10 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.joda.time.DateTime;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class ProgressFragment extends Fragment {
@@ -34,6 +40,9 @@ public class ProgressFragment extends Fragment {
     private FloatingActionButton mFab;
     private GraphView mGraph;
     private LineGraphSeries<DataPoint> mPercentFatSeries;
+
+    private RecyclerView mRecyclerView;
+    private TimelineAdapter mAdapter;
 
     public static ProgressFragment newInstance(UUID userId) {
         Bundle args = new Bundle();
@@ -48,7 +57,7 @@ public class ProgressFragment extends Fragment {
      * Required interface for hosting activities
      */
     public interface Callbacks {
-        void onBodyCreated(Body body);
+        void onBodyEdited(Body body);
     }
 
     @Override
@@ -98,14 +107,14 @@ public class ProgressFragment extends Fragment {
 
                     Log.i(TAG, "New body created for user " + mUser.getName() + " with id " + body.getId());
                     BodyHandler.get(getActivity()).addBody(body);
-                    mCallbacks.onBodyCreated(body);
+                    mCallbacks.onBodyEdited(body);
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage("You have already created a record today. Do you want to edit it?");
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                mCallbacks.onBodyCreated(latestBody);
+                                mCallbacks.onBodyEdited(latestBody);
                             }
                     });
                     builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -144,6 +153,11 @@ public class ProgressFragment extends Fragment {
         // is not necessary
         mGraph.getGridLabelRenderer().setHumanRounding(false);
 
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+
+
+
         updateUI();
 
         return view;
@@ -155,6 +169,7 @@ public class ProgressFragment extends Fragment {
 
         // todo
         updateGraph();
+        updateTimeline();
     }
 
     private void updateGraph() {
@@ -174,7 +189,6 @@ public class ProgressFragment extends Fragment {
 
     }
 
-
     private DataPoint[] createPercentFatDataPoints(List<BodyIndex> indices) {
         List<DataPoint> points = new ArrayList<>();
         for (BodyIndex index : indices) {
@@ -183,5 +197,87 @@ public class ProgressFragment extends Fragment {
         return points.toArray(new DataPoint[points.size()]);
     }
 
+    private void updateTimeline() {
+        List<Body> bodies = BodyHandler.get(getActivity()).getBodies(mUser.getId());
+        List<BodyIndex> indices = FitnessAnalyzer.analyze(mUser, bodies);
+
+        if (mAdapter == null) {
+            mAdapter = new TimelineAdapter(indices);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setBodyIndices(indices);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+
+    private class TimelineViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private BodyIndex mBodyIndex;
+
+        private TimelineView mTimelineView;
+        private TextView mPercentFatView;
+        private TextView mDateView;
+
+        public TimelineViewHolder(View itemView, int viewType) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            mTimelineView = (TimelineView) itemView.findViewById(R.id.timeline_view);
+            mTimelineView.initLine(viewType);
+
+            mPercentFatView = (TextView) itemView.findViewById(R.id.bodyindex_percentfat);
+            mDateView = (TextView) itemView.findViewById(R.id.bodyindex_date);
+        }
+
+        public void bind(BodyIndex bodyIndex) {
+            mBodyIndex = bodyIndex;
+            mPercentFatView.setText(getString(R.string.bodyindex_percentfat_format, mBodyIndex.getFatPercentage()));
+            mDateView.setText(new SimpleDateFormat("dd MMM yyyy HH:mm", Locale.US).format(mBodyIndex.getDate()));
+        }
+
+        @Override
+        public void onClick(View view) {
+            Body body = BodyHandler.get(getActivity()).getBody(mBodyIndex.getUserId(), mBodyIndex.getBodyId());
+            mCallbacks.onBodyEdited(body);
+        }
+    }
+
+    private class TimelineAdapter extends RecyclerView.Adapter<TimelineViewHolder> {
+
+        private List<BodyIndex> mBodyIndices;
+
+        public TimelineAdapter(List<BodyIndex> bodyIndices) {
+            mBodyIndices = bodyIndices;
+        }
+
+        public void setBodyIndices(List<BodyIndex> bodyIndices) {
+            mBodyIndices = bodyIndices;
+        }
+
+        @NonNull
+        @Override
+        public TimelineViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View view = inflater.inflate(R.layout.item_timeline, parent, false);
+            return new TimelineViewHolder(view, viewType);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull TimelineViewHolder holder, int position) {
+            BodyIndex bodyIndex = mBodyIndices.get(position);
+            holder.bind(bodyIndex);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mBodyIndices.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return TimelineView.getTimeLineViewType(position, getItemCount());
+        }
+
+    }
 
 }

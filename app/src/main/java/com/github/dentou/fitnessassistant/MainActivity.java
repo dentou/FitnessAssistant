@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBodyCreated(Body body) {
+    public void onBodyEdited(Body body) {
         Intent intent = BodyEditActivity.newIntent(this, body.getUserId(), body.getId());
         startActivity(intent);
     }
