@@ -34,7 +34,7 @@
    * [x] Height
    * [x] Weight
 * [ ] Progress display
-   * [ ] Display ALL values in a time line
+   * [x] Display ALL values in a time line
    * [ ] Display representative (average) daily values in form of a line chart
 * [ ] Set goal
 * [ ] Records stored online
