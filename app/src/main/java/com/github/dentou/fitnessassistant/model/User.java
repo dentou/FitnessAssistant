@@ -1,4 +1,4 @@
-package com.github.dentou.fitnessassistant;
+package com.github.dentou.fitnessassistant.model;
 
 import org.joda.time.DateTime;
 import org.joda.time.Years;

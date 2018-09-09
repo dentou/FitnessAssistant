@@ -3,7 +3,7 @@ package com.github.dentou.fitnessassistant.database;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import com.github.dentou.fitnessassistant.Body;
+import com.github.dentou.fitnessassistant.model.Body;
 import com.github.dentou.fitnessassistant.database.FitnessDbSchema.BodyTable;
 
 import java.util.Date;

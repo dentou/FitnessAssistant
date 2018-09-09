@@ -1,4 +1,4 @@
-package com.github.dentou.fitnessassistant;
+package com.github.dentou.fitnessassistant.model;
 
 import java.util.Date;
 import java.util.UUID;

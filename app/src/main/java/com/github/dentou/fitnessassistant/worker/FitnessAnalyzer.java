@@ -1,4 +1,8 @@
-package com.github.dentou.fitnessassistant;
+package com.github.dentou.fitnessassistant.worker;
+
+import com.github.dentou.fitnessassistant.model.Body;
+import com.github.dentou.fitnessassistant.model.BodyIndex;
+import com.github.dentou.fitnessassistant.model.User;
 
 import java.util.ArrayList;
 import java.util.List;

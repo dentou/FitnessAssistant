@@ -3,7 +3,6 @@ package com.github.dentou.fitnessassistant;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,9 +18,13 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 
+import com.github.dentou.fitnessassistant.model.Body;
+import com.github.dentou.fitnessassistant.model.User;
+import com.github.dentou.fitnessassistant.worker.BodyHandler;
+import com.github.dentou.fitnessassistant.worker.UserHandler;
+
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Locale;
 import java.util.UUID;
 
 public class BodyEditFragment extends Fragment {

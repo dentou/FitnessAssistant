@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.github.dentou.fitnessassistant.model.User;
+import com.github.dentou.fitnessassistant.worker.UserHandler;
+
 public class ProfileEmptyFragment extends Fragment {
 
     private static final String TAG = "ProfileEmptyFragment";

@@ -1,4 +1,4 @@
-package com.github.dentou.fitnessassistant;
+package com.github.dentou.fitnessassistant.worker;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,9 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import com.github.dentou.fitnessassistant.database.BodyCursorWrapper;
 import com.github.dentou.fitnessassistant.database.FitnessBaseHelper;
 import com.github.dentou.fitnessassistant.database.FitnessDbSchema.BodyTable;
+import com.github.dentou.fitnessassistant.model.Body;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 

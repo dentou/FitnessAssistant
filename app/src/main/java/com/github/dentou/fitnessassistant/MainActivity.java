@@ -3,13 +3,15 @@ package com.github.dentou.fitnessassistant;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.github.dentou.fitnessassistant.model.Body;
+import com.github.dentou.fitnessassistant.model.User;
+import com.github.dentou.fitnessassistant.worker.UserHandler;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;

@@ -16,6 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.dentou.fitnessassistant.model.Body;
+import com.github.dentou.fitnessassistant.model.BodyIndex;
+import com.github.dentou.fitnessassistant.model.User;
+import com.github.dentou.fitnessassistant.worker.BodyHandler;
+import com.github.dentou.fitnessassistant.worker.FitnessAnalyzer;
+import com.github.dentou.fitnessassistant.worker.UserHandler;
 import com.github.vipulasri.timelineview.TimelineView;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
