@@ -6,6 +6,7 @@ import com.github.dentou.fitnessassistant.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FitnessAnalyzer {
 
@@ -21,6 +22,32 @@ public class FitnessAnalyzer {
         BodyIndex result = new BodyIndex(user.getId(), body.getId(), body.getDate());
         result.setFatPercentage(computeBodyFatPercentage(user, body));
         return result;
+    }
+
+    public static BodyIndex computeMean(List<BodyIndex> bodyIndices) {
+        if (bodyIndices == null || bodyIndices.isEmpty()) {
+            return null;
+        }
+        if (bodyIndices.size() == 1) {
+            return bodyIndices.get(0);
+        }
+        BodyIndex latestBodyIndex = bodyIndices.get(bodyIndices.size() - 1);
+
+
+        float meanPercentFat = 0;
+        for (BodyIndex bodyIndex : bodyIndices) {
+            meanPercentFat += bodyIndex.getFatPercentage();
+        }
+        meanPercentFat = meanPercentFat / bodyIndices.size();
+
+        BodyIndex result = new BodyIndex(
+                latestBodyIndex.getUserId(),
+                latestBodyIndex.getBodyId(),
+                latestBodyIndex.getDate());
+
+        result.setFatPercentage(meanPercentFat);
+        return result;
+
     }
 
     public static float computeBodyFatPercentage(User user, Body body) {

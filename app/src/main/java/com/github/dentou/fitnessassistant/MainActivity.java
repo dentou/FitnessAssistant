@@ -1,12 +1,12 @@
 package com.github.dentou.fitnessassistant;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.github.dentou.fitnessassistant.model.Body;
@@ -28,7 +28,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements ProfileEmptyFragment.Callbacks, ProfileFragment.Callbacks, ProgressFragment.Callbacks {
 
-    private static final String EXTRA_DRAWER_ITEM_ID = "com.github.dentou.fitnessassistant.drawer_item";
+    public static final String TAG = "MainActivity";
 
     private static final long DRAWER_PROFILE_ID = 1;
     private static final long DRAWER_PROGRESS_ID = 2;
@@ -37,12 +37,9 @@ public class MainActivity extends AppCompatActivity
     private User mUser;
 
     private Drawer mDrawer;
+    private AccountHeader mAccountHeader;
 
-    public static Intent newIntent(Context packageContext, long drawerItemId) {
-        Intent intent = new Intent(packageContext, BodyEditActivity.class);
-        intent.putExtra(EXTRA_DRAWER_ITEM_ID, drawerItemId);
-        return intent;
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +50,6 @@ public class MainActivity extends AppCompatActivity
         if (users != null && !users.isEmpty()) {
             mUser = users.get(0);
         }
-
-        long drawerItemId = getIntent().getLongExtra(EXTRA_DRAWER_ITEM_ID, DRAWER_PROFILE_ID);
 
         final PrimaryDrawerItem profileDrawerItem = new PrimaryDrawerItem().withIdentifier(DRAWER_PROFILE_ID)
                 .withName(R.string.drawer_profile).withIcon(GoogleMaterial.Icon.gmd_person);
@@ -68,27 +63,29 @@ public class MainActivity extends AppCompatActivity
 
 
         // Create the AccountHeader
-        AccountHeader headerResult = new AccountHeaderBuilder()
+        mAccountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withSelectionListEnabledForSingleProfile(false)
                 .withHeaderBackground(R.drawable.header)
-                .addProfiles(
-                        new ProfileDrawerItem().withName("Huy Tran").withEmail("huytran.ee@gmail.com")
-                                .withIcon(R.drawable.sample_profile)
-                )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
                         return false;
                     }
                 })
+                .withSavedInstance(savedInstanceState)
                 .build();
+
+        if (mUser != null) {
+            mAccountHeader.addProfiles(new ProfileDrawerItem().withName(mUser.getName())
+                    .withIcon(R.drawable.sample_profile).withIdentifier(1 + mAccountHeader.getProfiles().size()));
+        }
 
         //create the drawer and remember the `Drawer` result object
         mDrawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .withAccountHeader(headerResult)
+                .withAccountHeader(mAccountHeader)
                 .withHasStableIds(true)
                 .addDrawerItems(
                         profileDrawerItem,
@@ -117,22 +114,32 @@ public class MainActivity extends AppCompatActivity
                 .withSavedInstance(savedInstanceState)
                 .build();
 
-        mDrawer.setSelection(drawerItemId, true);
+        if (savedInstanceState == null) {
+            mDrawer.setSelection(DRAWER_PROFILE_ID, true);
+        }
 
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        if (mUser == null) {
-            List<User> users = UserHandler.get(this).getUsers();
-            if (users != null && !users.isEmpty()) {
-                mUser = users.get(0);
-            }
-            if (mUser != null) {
-                mDrawer.setSelection(mDrawer.getCurrentSelection(), true);
-            }
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "OnResume");
+
+        List<User> users = UserHandler.get(this).getUsers();
+        if (users != null && !users.isEmpty()) {
+            mUser = users.get(0);
         }
+
+        if (mUser != null) {
+
+            IProfile profile = (IProfile) mAccountHeader.getActiveProfile().withName(mUser.getName());
+            mAccountHeader.updateProfile(profile);
+            Log.i(TAG, "Profile updated");
+
+            mDrawer.setSelection(mDrawer.getCurrentSelection(), true); // Fire OnClickListener to change fragment
+
+        }
+
 
     }
 
@@ -140,7 +147,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState = mDrawer.saveInstanceState(outState);
+        outState = mAccountHeader.saveInstanceState(outState);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     public void changeFragment(Fragment newFragment) {
@@ -170,6 +183,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onProfileCreated(User user) {
+        mAccountHeader.addProfiles(new ProfileDrawerItem().withName(user.getName())
+                .withIcon(R.drawable.sample_profile));
         Intent intent = ProfileEditActivity.newIntent(this, user.getId());
         startActivity(intent);
     }

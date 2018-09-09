@@ -1,8 +1,6 @@
 package com.github.dentou.fitnessassistant;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,10 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.dentou.fitnessassistant.model.Body;
 import com.github.dentou.fitnessassistant.model.BodyIndex;
 import com.github.dentou.fitnessassistant.model.User;
+import com.github.dentou.fitnessassistant.utils.DateUtils;
 import com.github.dentou.fitnessassistant.worker.BodyHandler;
 import com.github.dentou.fitnessassistant.worker.FitnessAnalyzer;
 import com.github.dentou.fitnessassistant.worker.UserHandler;
@@ -26,9 +26,10 @@ import com.github.vipulasri.timelineview.TimelineView;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
-
-import org.joda.time.DateTime;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -104,34 +105,16 @@ public class ProgressFragment extends Fragment {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 final Body latestBody = BodyHandler.get(getActivity()).getLatestBody(mUser.getId());
                 final Body body = new Body(mUser.getId());
-
-                if (latestBody == null ||
-                        (new DateTime(latestBody.getDate()).getDayOfWeek() != new DateTime(body.getDate()).getDayOfWeek())) {
-
-                    Log.i(TAG, "New body created for user " + mUser.getName() + " with id " + body.getId());
-                    BodyHandler.get(getActivity()).addBody(body);
-                    mCallbacks.onBodyEdited(body);
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage("You have already created a record today. Do you want to edit it?");
-                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                mCallbacks.onBodyEdited(latestBody);
-                            }
-                    });
-                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
+                if (latestBody != null) {
+                    body.setHeight(latestBody.getHeight());
+                    body.setWeight(latestBody.getWeight());
                 }
+                Log.i(TAG, "New body created for user " + mUser.getName() + " with id " + body.getId());
+                BodyHandler.get(getActivity()).addBody(body);
+                mCallbacks.onBodyEdited(body);
+
             }
         });
 
@@ -147,6 +130,17 @@ public class ProgressFragment extends Fragment {
         mPercentFatSeries.setDrawDataPoints(true);
         mPercentFatSeries.setDrawBackground(true);
         mPercentFatSeries.setAnimated(true);
+        mPercentFatSeries.setOnDataPointTapListener(new OnDataPointTapListener() {
+            @Override
+            public void onTap(Series series, DataPointInterface dataPoint) {
+                Toast.makeText(getActivity(),
+                        getString(R.string.bodyindex_percentfat_format,
+                        dataPoint.getY()),
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
         mGraph.addSeries(mPercentFatSeries);
 
 
@@ -189,16 +183,28 @@ public class ProgressFragment extends Fragment {
 
         // set manual x bounds to have nice steps
         mGraph.getViewport().setMinX(points[0].getX());
-        mGraph.getViewport().setMaxX(points[points.length > 3 ? 2 : points.length - 1].getX());
+        mGraph.getViewport().setMaxX(points[points.length - 1].getX());
         mGraph.getViewport().setXAxisBoundsManual(true);
         mGraph.getViewport().scrollToEnd();
 
     }
 
-    private DataPoint[] createPercentFatDataPoints(List<BodyIndex> indices) {
-        List<DataPoint> points = new ArrayList<>();
-        for (BodyIndex index : indices) {
-            points.add(new DataPoint(index.getDate(), index.getFatPercentage()));
+    private DataPoint[] createPercentFatDataPoints(List<BodyIndex> bodyIndices) {
+        List<DataPoint> points = new ArrayList<>(); // data points in graph
+
+        List<BodyIndex> tempList = new ArrayList<>(); // temporary buffer for mean calculation
+        for (int i = 0; i < bodyIndices.size(); i++) {
+
+            tempList.add(bodyIndices.get(i));
+
+            if (i == (bodyIndices.size() - 1)  // last element in list
+                    || !DateUtils.isSameDay(bodyIndices.get(i).getDate(), bodyIndices.get(i+1).getDate())) { // if next record is on a different day
+
+                BodyIndex mean = FitnessAnalyzer.computeMean(tempList);
+                tempList.clear();
+
+                points.add(new DataPoint(mean.getDate(), mean.getFatPercentage()));
+            }
         }
         return points.toArray(new DataPoint[points.size()]);
     }

@@ -106,7 +106,7 @@ public class BodyEditFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 mUseLastValues = isChecked;
-                updateInputFields();
+                updateHeightAndWeightFields();
             }
         });
 
@@ -165,7 +165,15 @@ public class BodyEditFragment extends Fragment {
     }
 
     private void updateInputFields() {
+        mBicepsField.setText(getString(R.string.integer_format, mBody.getBiceps()));
+        mTricepsField.setText(getString(R.string.integer_format, mBody.getTriceps()));
+        mSubscapularField.setText(getString(R.string.integer_format, mBody.getSubscapular()));
+        mSuprailiacField.setText(getString(R.string.integer_format, mBody.getSuprailiac()));
 
+        updateHeightAndWeightFields();
+    }
+
+    private void updateHeightAndWeightFields() {
         if (mUseLastValues) {
             if (mLastestBody != null) {
                 mBody.setHeight(mLastestBody.getHeight());
@@ -176,13 +184,8 @@ public class BodyEditFragment extends Fragment {
         mHeightField.setEnabled(!mUseLastValues);
         mWeightField.setEnabled(!mUseLastValues);
 
-        mBicepsField.setText(getString(R.string.integer_format, mBody.getBiceps()));
-        mTricepsField.setText(getString(R.string.integer_format, mBody.getTriceps()));
-        mSubscapularField.setText(getString(R.string.integer_format, mBody.getSubscapular()));
-        mSuprailiacField.setText(getString(R.string.integer_format, mBody.getSuprailiac()));
         mHeightField.setText(getString(R.string.float_format, mBody.getHeight()));
         mWeightField.setText(getString(R.string.float_format, mBody.getWeight()));
-
     }
 
 
