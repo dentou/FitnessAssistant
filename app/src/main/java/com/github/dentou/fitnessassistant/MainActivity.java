@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.github.dentou.fitnessassistant.model.Body;
 import com.github.dentou.fitnessassistant.model.User;
+import com.github.dentou.fitnessassistant.worker.BodyHandler;
 import com.github.dentou.fitnessassistant.worker.UserHandler;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -49,6 +50,13 @@ public class MainActivity extends AppCompatActivity
         List<User> users = UserHandler.get(this).getUsers();
         if (users != null && !users.isEmpty()) {
             mUser = users.get(0);
+        }
+
+        if (mUser != null) {
+            Body latestBody = BodyHandler.get(MainActivity.this).getLatestBody(mUser.getId());
+            if (latestBody != null && !latestBody.isValid()) {
+                BodyHandler.get(MainActivity.this).deleteBody(mUser.getId(), latestBody.getId());
+            }
         }
 
         final PrimaryDrawerItem profileDrawerItem = new PrimaryDrawerItem().withIdentifier(DRAWER_PROFILE_ID)

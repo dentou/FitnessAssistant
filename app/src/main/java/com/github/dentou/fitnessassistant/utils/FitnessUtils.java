@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 
 import java.util.Date;
 
-public class DateUtils {
+public class FitnessUtils {
 
     public static boolean isSameDay(Date first, Date second) {
         if (first == null || second == null) {

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,9 +23,7 @@ import android.widget.RadioGroup;
 import com.github.dentou.fitnessassistant.model.User;
 import com.github.dentou.fitnessassistant.worker.UserHandler;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.UUID;
 
 public class ProfileEditFragment extends Fragment {
@@ -131,7 +130,7 @@ public class ProfileEditFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_edit, menu);
 
-        MenuItem saveButton = (MenuItem) menu.findItem(R.id.profile_save);
+        MenuItem saveButton = (MenuItem) menu.findItem(R.id.menu_save);
         if (mSaveButtonEnabled) {
             saveButton.setEnabled(true);
             saveButton.getIcon().setAlpha(255);
@@ -139,12 +138,15 @@ public class ProfileEditFragment extends Fragment {
             saveButton.setEnabled(false);
             saveButton.getIcon().setAlpha(130);
         }
+
+        MenuItem deleteButton = (MenuItem) menu.findItem(R.id.menu_delete);
+        deleteButton.setEnabled(false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.profile_save:
+            case R.id.menu_save:
                 updateUser();
                 getActivity().finish();
                 return true;
@@ -162,7 +164,10 @@ public class ProfileEditFragment extends Fragment {
     }
 
     private void updateDate() {
-        mDateButton.setText(new SimpleDateFormat("EEE, d MMM yyyy", Locale.US).format(mUser.getDateOfBirth()));
+        mDateButton.setText(DateUtils.formatDateTime(
+                getActivity(), mUser.getDateOfBirth().getTime(),
+                DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE |
+                        DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_ABBREV_ALL));
     }
 
     private void updateSaveButtonState() {

@@ -1,11 +1,17 @@
 package com.github.dentou.fitnessassistant;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -25,14 +32,21 @@ import com.github.dentou.fitnessassistant.worker.UserHandler;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.UUID;
 
 public class BodyEditFragment extends Fragment {
 
     private static final String TAG = "BodyEditFragment";
+    private static final String DIALOG_DATE = "DialogDate";
+    private static final String DIALOG_TIME = "DialogTime";
 
     private static final String ARG_USER_ID = "user_id";
     private static final String ARG_BODY_ID = "body_id";
+
+    private static final int REQUEST_DATE = 1;
+    private static final int REQUEST_TIME = 2;
+
 
     private User mUser;
     private Body mLastestBody;
@@ -47,6 +61,8 @@ public class BodyEditFragment extends Fragment {
     private EditText mSuprailiacField;
     private EditText mHeightField;
     private EditText mWeightField;
+    private Button mDateButton;
+    private Button mTimeButton;
 
 
     private boolean mSaveButtonEnabled = false;
@@ -110,6 +126,33 @@ public class BodyEditFragment extends Fragment {
             }
         });
 
+        mDateButton = (Button) view.findViewById(R.id.body_date_button);
+        mDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = getFragmentManager();
+                if (fm != null) {
+                    DatePickerFragment dialog = DatePickerFragment.newInstance(mBody.getDate());
+                    dialog.setTargetFragment(BodyEditFragment.this, REQUEST_DATE);
+                    dialog.show(fm, DIALOG_DATE);
+                }
+            }
+        });
+
+        mTimeButton = (Button) view.findViewById(R.id.body_time_button);
+        mTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = getFragmentManager();
+                if (fm != null) {
+                    TimePickerFragment dialog = TimePickerFragment.newInstance(mBody.getDate());
+                    dialog.setTargetFragment(BodyEditFragment.this, REQUEST_TIME);
+                    dialog.show(fm, DIALOG_TIME);
+                }
+            }
+        });
+
+        updateDate();
         updateInputFields();
         updateSaveButtonState();
 
@@ -122,7 +165,7 @@ public class BodyEditFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_edit, menu);
 
-        MenuItem saveButton = (MenuItem) menu.findItem(R.id.profile_save);
+        MenuItem saveButton = (MenuItem) menu.findItem(R.id.menu_save);
         if (mSaveButtonEnabled) {
             saveButton.setEnabled(true);
             saveButton.getIcon().setAlpha(255);
@@ -135,15 +178,50 @@ public class BodyEditFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.profile_save:
+            case R.id.menu_save:
                 updateBody();
                 getActivity().finish();
+                return true;
+            case R.id.menu_delete:
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(getString(R.string.body_delete_warning));
+                builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        BodyHandler.get(getActivity()).deleteBody(mBody.getUserId(), mBody.getId());
+                        getActivity().finish();
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Empty
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_DATE) {
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mBody.setDate(date);
+            updateDate();
+        } else if (requestCode == REQUEST_TIME)  {
+            Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
+            mBody.setDate(date);
+            updateDate();
+        }
+    }
 
     private void updateBody() {
 
@@ -164,11 +242,22 @@ public class BodyEditFragment extends Fragment {
         BodyHandler.get(getActivity()).updateBody(mBody);
     }
 
+    private void updateDate() {
+        mDateButton.setText(DateUtils.formatDateTime(
+                getActivity(), mBody.getDate().getTime(),
+                DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE |
+                        DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_ABBREV_ALL));
+        mTimeButton.setText(DateUtils.formatDateTime(
+                getActivity(), mBody.getDate().getTime(),
+                DateUtils.FORMAT_SHOW_TIME));
+
+    }
+
     private void updateInputFields() {
-        mBicepsField.setText(getString(R.string.integer_format, mBody.getBiceps()));
-        mTricepsField.setText(getString(R.string.integer_format, mBody.getTriceps()));
-        mSubscapularField.setText(getString(R.string.integer_format, mBody.getSubscapular()));
-        mSuprailiacField.setText(getString(R.string.integer_format, mBody.getSuprailiac()));
+        mBicepsField.setText(mBody.getBiceps() != 0 ? getString(R.string.integer_format, mBody.getBiceps()) : "");
+        mTricepsField.setText(mBody.getTriceps() != 0 ? getString(R.string.integer_format, mBody.getTriceps()) : "");
+        mSubscapularField.setText(mBody.getSubscapular() != 0 ? getString(R.string.integer_format, mBody.getSubscapular()) : "");
+        mSuprailiacField.setText(mBody.getSuprailiac() != 0 ? getString(R.string.integer_format, mBody.getSuprailiac()) : "");
 
         updateHeightAndWeightFields();
     }
@@ -184,8 +273,8 @@ public class BodyEditFragment extends Fragment {
         mHeightField.setEnabled(!mUseLastValues);
         mWeightField.setEnabled(!mUseLastValues);
 
-        mHeightField.setText(getString(R.string.float_format, mBody.getHeight()));
-        mWeightField.setText(getString(R.string.float_format, mBody.getWeight()));
+        mHeightField.setText(mBody.getHeight() != 0 ? getString(R.string.float_format, mBody.getHeight()) : "");
+        mWeightField.setText(mBody.getWeight() != 0 ? getString(R.string.float_format, mBody.getWeight()) : "");
     }
 
 

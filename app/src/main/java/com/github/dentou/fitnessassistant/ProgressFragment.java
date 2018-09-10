@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +20,13 @@ import android.widget.Toast;
 import com.github.dentou.fitnessassistant.model.Body;
 import com.github.dentou.fitnessassistant.model.BodyIndex;
 import com.github.dentou.fitnessassistant.model.User;
-import com.github.dentou.fitnessassistant.utils.DateUtils;
+import com.github.dentou.fitnessassistant.utils.FitnessUtils;
 import com.github.dentou.fitnessassistant.worker.BodyHandler;
 import com.github.dentou.fitnessassistant.worker.FitnessAnalyzer;
 import com.github.dentou.fitnessassistant.worker.UserHandler;
 import com.github.vipulasri.timelineview.TimelineView;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
@@ -31,10 +34,8 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 public class ProgressFragment extends Fragment {
@@ -119,14 +120,17 @@ public class ProgressFragment extends Fragment {
         });
 
         mGraph = (GraphView) view.findViewById(R.id.graph);
-        mGraph.setTitle("% Body Fat");
+        mGraph.setTitle(getString(R.string.progress_graph_title));
         mGraph.getViewport().setScalable(true);
+        mGraph.getLegendRenderer().setVisible(true);
+        mGraph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
 
         mGraph.getViewport().setYAxisBoundsManual(true);
         mGraph.getViewport().setMinY(0);
         mGraph.getViewport().setMaxY(100);
 
         mPercentFatSeries = new LineGraphSeries<>();
+        mPercentFatSeries.setTitle(getString(R.string.percent_fat_series));
         mPercentFatSeries.setDrawDataPoints(true);
         mPercentFatSeries.setDrawBackground(true);
         mPercentFatSeries.setAnimated(true);
@@ -198,7 +202,7 @@ public class ProgressFragment extends Fragment {
             tempList.add(bodyIndices.get(i));
 
             if (i == (bodyIndices.size() - 1)  // last element in list
-                    || !DateUtils.isSameDay(bodyIndices.get(i).getDate(), bodyIndices.get(i+1).getDate())) { // if next record is on a different day
+                    || !FitnessUtils.isSameDay(bodyIndices.get(i).getDate(), bodyIndices.get(i+1).getDate())) { // if next record is on a different day
 
                 BodyIndex mean = FitnessAnalyzer.computeMean(tempList);
                 tempList.clear();
@@ -244,7 +248,10 @@ public class ProgressFragment extends Fragment {
         public void bind(BodyIndex bodyIndex) {
             mBodyIndex = bodyIndex;
             mPercentFatView.setText(getString(R.string.bodyindex_percentfat_format, mBodyIndex.getFatPercentage()));
-            mDateView.setText(new SimpleDateFormat("dd MMM yyyy HH:mm", Locale.US).format(mBodyIndex.getDate()));
+            mDateView.setText(DateUtils.formatDateTime(
+                    getActivity(), mBodyIndex.getDate().getTime(),
+                    DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE |
+                            DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_ABBREV_ALL));
         }
 
         @Override

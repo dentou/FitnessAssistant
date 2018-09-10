@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,6 @@ import android.widget.TextView;
 import com.github.dentou.fitnessassistant.model.User;
 import com.github.dentou.fitnessassistant.worker.UserHandler;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.UUID;
 
 public class ProfileFragment extends Fragment {
@@ -106,6 +105,9 @@ public class ProfileFragment extends Fragment {
 
         mNameView.setText(mUser.getName());
         mGenderView.setText(mUser.getGender() == User.MALE ? R.string.gender_male : R.string.gender_female);
-        mDateView.setText(new SimpleDateFormat("EEE, d MMM yyyy", Locale.US).format(mUser.getDateOfBirth()));
+        mDateView.setText(DateUtils.formatDateTime(
+                getActivity(), mUser.getDateOfBirth().getTime(),
+                DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE |
+                        DateUtils.FORMAT_SHOW_YEAR));
     }
 }

@@ -88,4 +88,10 @@ public class Body {
     public void setWeight(float weight) {
         mWeight = weight;
     }
+
+    public boolean isValid() {
+        return mBiceps > 0 && mTriceps > 0 && mSubscapular > 0 && mSuprailiac > 0
+                && mHeight > 0 && mWeight > 0;
+    }
+
 }
