@@ -6,7 +6,6 @@ import com.github.dentou.fitnessassistant.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class FitnessAnalyzer {
 
@@ -21,6 +20,10 @@ public class FitnessAnalyzer {
     public static BodyIndex analyze(User user, Body body) {
         BodyIndex result = new BodyIndex(user.getId(), body.getId(), body.getDate());
         result.setFatPercentage(computeBodyFatPercentage(user, body));
+        result.setFatMass(computeBodyFatMass(result.getFatPercentage(), body.getWeight()));
+        result.setLeanMuscleMass(body.getWeight() - result.getFatMass());
+        result.setBMI(computeBodyBMI(body.getHeight(), body.getWeight()));
+        result.setBMR(computeBodyBMR(body.getHeight(), body.getWeight(), user.getAge(), user.getGender() == User.MALE));
         return result;
     }
 
@@ -50,16 +53,35 @@ public class FitnessAnalyzer {
 
     }
 
-    public static float computeBodyFatPercentage(User user, Body body) {
+    private static float computeBodyBMR(float height, float weight, int age, boolean isMale) {
+        // Height in m, weight in kg, age in years
+        float result = (10 * weight) + (625 * height) - (5 * age);
+        if (isMale) {
+            result += 5;
+        } else {
+            result -= 161;
+        }
+        return result;
+    }
+
+    private static float computeBodyBMI(float height, float weight) {
+        return weight / (height * height);
+    }
+
+    private static float computeBodyFatMass(float bodyFatPercentage, float weight) {
+        return weight * (bodyFatPercentage / 100);
+    }
+
+    private static float computeBodyFatPercentage(User user, Body body) {
         return computeBodyFatPercentage(user.getAge(), user.getGender() == User.MALE,
                 body.getBiceps(), body.getTriceps(), body.getSubscapular(), body.getSuprailiac());
     }
 
-    public static float computeBodyFatPercentage(int age, boolean male,
+    private static float computeBodyFatPercentage(int age, boolean male,
                        int biceps, int triceps, int subscapular, int suprailiac) {
         double L = Math.log10(biceps + triceps + subscapular + suprailiac);
-        double a = 0;
-        double b = 0;
+        double a;
+        double b;
         if (male) {
             if (age < 17) {
                 a = 1.1533;

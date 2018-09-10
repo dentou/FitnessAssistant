@@ -62,7 +62,11 @@
     <string name="body_weight_unit">kg</string>
 
     <!-- Body Index -->
-    <string name="bodyindex_percentfat_format">%% Body Fat: %.2f%%</string>
+    <string name="bodyindex_percentfat_format">%%Fat: %.2f%%</string>
+    <string name="bodyindex_fatmass">Fat Mass: %.1f kg</string>
+    <string name="bodyindex_leanmusclemass">Muscle Mass: %.1f kg</string>
+    <string name="bodyindex_bmi">BMI: %.2f kg/m^2</string>
+    <string name="bodyindex_bmr">BMR: %.1f cal/day</string>
 
     <!-- Graph -->
     <string name="progress_graph_title">Body Index</string>

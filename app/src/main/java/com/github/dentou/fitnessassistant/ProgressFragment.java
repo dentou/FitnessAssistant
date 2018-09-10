@@ -233,6 +233,11 @@ public class ProgressFragment extends Fragment {
 
         private TimelineView mTimelineView;
         private TextView mPercentFatView;
+        private TextView mFatMassView;
+        private TextView mMuscleMassView;
+        private TextView mBMIView;
+        private TextView mBMRView;
+
         private TextView mDateView;
 
         public TimelineViewHolder(View itemView, int viewType) {
@@ -242,12 +247,22 @@ public class ProgressFragment extends Fragment {
             mTimelineView.initLine(viewType);
 
             mPercentFatView = (TextView) itemView.findViewById(R.id.bodyindex_percentfat);
+            mFatMassView = (TextView) itemView.findViewById(R.id.bodyindex_fatmass);
+            mMuscleMassView = (TextView) itemView.findViewById(R.id.bodyindex_musclemass);
+            mBMIView = (TextView) itemView.findViewById(R.id.bodyindex_bmi);
+            mBMRView = (TextView) itemView.findViewById(R.id.bodyindex_bmr);
             mDateView = (TextView) itemView.findViewById(R.id.bodyindex_date);
         }
 
         public void bind(BodyIndex bodyIndex) {
             mBodyIndex = bodyIndex;
+
             mPercentFatView.setText(getString(R.string.bodyindex_percentfat_format, mBodyIndex.getFatPercentage()));
+            mFatMassView.setText(getString(R.string.bodyindex_fatmass, mBodyIndex.getFatMass()));
+            mMuscleMassView.setText(getString(R.string.bodyindex_leanmusclemass, mBodyIndex.getLeanMuscleMass()));
+            mBMIView.setText(getString(R.string.bodyindex_bmi, mBodyIndex.getBMI()));
+            mBMRView.setText(getString(R.string.bodyindex_bmr, mBodyIndex.getBMR()));
+
             mDateView.setText(DateUtils.formatDateTime(
                     getActivity(), mBodyIndex.getDate().getTime(),
                     DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE |

@@ -20,14 +20,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
+            android:gravity="center|left"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/bodyindex_percentfat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                tools:text="% Fat: 25.3%" />
+
+            <TextView
+                android:id="@+id/bodyindex_fatmass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Fat Mass: 25.3 kg" />
+
+            <TextView
+                android:id="@+id/bodyindex_musclemass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Muscle Mass: 25.3 kg" />
+
+            <TextView
+                android:id="@+id/bodyindex_bmi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="BMI: 12.87 kg/m^2" />
+
+            <TextView
+                android:id="@+id/bodyindex_bmr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="BMI: 200.2 kcal/day"/>
 
         </LinearLayout>
 
@@ -49,7 +73,7 @@
         android:id="@+id/bodyindex_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        tools:text="Mon, 21 Sep 2018" />
 
 
 </LinearLayout>

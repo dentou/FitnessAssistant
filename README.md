@@ -16,10 +16,10 @@
 
 ### Analysis
 * [x] Body fat percentage
-* [ ] Body fat mass
-* [ ] Lean muscle mass
-* [ ] BMI
-* [ ] BMR
+* [x] Body fat mass
+* [x] Lean muscle mass
+* [x] BMI
+* [x] BMR
 * [ ] Daily calories needs
 
 ### Progress tracking

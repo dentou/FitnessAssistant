@@ -9,6 +9,10 @@ public class BodyIndex {
     private UUID mBodyId;
     private Date mDate;
     private float mFatPercentage;
+    private float mFatMass;
+    private float mLeanMuscleMass;
+    private float mBMI;
+    private float mBMR;
 
     public BodyIndex(UUID userId, UUID bodyId, Date date) {
         mUserId = userId;
@@ -24,6 +28,10 @@ public class BodyIndex {
         return mBodyId;
     }
 
+    public Date getDate() {
+        return mDate;
+    }
+
     public float getFatPercentage() {
         return mFatPercentage;
     }
@@ -32,7 +40,35 @@ public class BodyIndex {
         mFatPercentage = fatPercentage;
     }
 
-    public Date getDate() {
-        return mDate;
+    public float getFatMass() {
+        return mFatMass;
+    }
+
+    public void setFatMass(float fatMass) {
+        mFatMass = fatMass;
+    }
+
+    public float getLeanMuscleMass() {
+        return mLeanMuscleMass;
+    }
+
+    public void setLeanMuscleMass(float leanMuscleMass) {
+        mLeanMuscleMass = leanMuscleMass;
+    }
+
+    public float getBMI() {
+        return mBMI;
+    }
+
+    public void setBMI(float BMI) {
+        mBMI = BMI;
+    }
+
+    public float getBMR() {
+        return mBMR;
+    }
+
+    public void setBMR(float BMR) {
+        mBMR = BMR;
     }
 }
